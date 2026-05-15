@@ -76,7 +76,8 @@ function ProgramDetail() {
           </div>
 
           {features.length > 0 && (
-            <ul className="flex flex-col gap-2 mt-2">
+            <ul className="flex flex-col gap-2 mt-4 p-4 bg-muted/40 rounded-2xl border border-border/50">
+              <p className="text-sm font-bold uppercase text-secondary mb-2">{lang === 'ka' ? 'რა შედის?' : 'What\'s Included?'}</p>
               {features.map((f, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm font-semibold">
                   <span className="w-5 h-5 rounded-full bg-secondary/15 text-secondary flex items-center justify-center flex-shrink-0 mt-0.5"><Check size={12} /></span>
@@ -86,14 +87,31 @@ function ProgramDetail() {
             </ul>
           )}
 
-          {p.longDescription && <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-line">{p.longDescription}</p>}
+          {p.longDescription && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="p-4 bg-accent/10 rounded-2xl border border-accent/20"
+            >
+              <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-line">{p.longDescription}</p>
+            </motion.div>
+          )}
 
-          <Link
-            to="/booking"
-            className="mt-2 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-secondary text-foreground font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-glow w-fit"
-          >
-            {t.ui.book} <ArrowRight size={18} />
-          </Link>
+          <div className="flex gap-3 flex-wrap pt-2">
+            <Link
+              to="/booking"
+              className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-secondary text-foreground font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-glow"
+            >
+              {t.ui.book} <ArrowRight size={18} />
+            </Link>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-4 rounded-full bg-muted text-muted-foreground font-bold text-sm hover:bg-muted/80 transition-colors border border-border"
+            >
+              {lang === 'ka' ? 'კითხვა' : 'Ask'}
+            </motion.button>
+          </div>
         </div>
       </div>
 
@@ -101,13 +119,22 @@ function ProgramDetail() {
 
       {faq.length > 0 && (
         <section className="mt-16">
-          <h2 className="font-display text-3xl md:text-4xl gradient-text mb-6">{lang === 'ka' ? 'კითხვები' : 'Questions'}</h2>
-          <div className="flex flex-col gap-3">
+          <h2 className="font-display text-3xl md:text-4xl gradient-text mb-6">{lang === 'ka' ? 'ხშირი კითხვები' : 'FAQ'}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {faq.map((q: any, i: number) => (
-              <details key={i} className="rounded-2xl bg-card border border-border p-5 group">
-                <summary className="font-bold cursor-pointer flex justify-between items-center">{q.question}<span className="text-secondary group-open:rotate-180 transition-transform">▾</span></summary>
+              <motion.details
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="rounded-2xl bg-card border border-border p-5 group hover:shadow-card transition-all cursor-pointer"
+              >
+                <summary className="font-bold cursor-pointer flex justify-between items-center list-none">
+                  <span className="text-sm md:text-base">{q.question}</span>
+                  <span className="text-secondary group-open:rotate-180 transition-transform flex-shrink-0 ml-2">▾</span>
+                </summary>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{q.answer}</p>
-              </details>
+              </motion.details>
             ))}
           </div>
         </section>
