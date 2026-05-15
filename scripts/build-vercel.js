@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, writeFileSync, readdirSync, readFileSync } from 'fs';
+import { cpSync, mkdirSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -7,54 +7,91 @@ const root = join(__dirname, '..');
 
 // Create Vercel output directories
 const outputDir = join(root, '.vercel', 'output');
-const funcDir = join(outputDir, 'functions', 'index.func');
 const staticDir = join(outputDir, 'static');
+const funcDir = join(outputDir, 'functions', '__nitro.func');
 
-mkdirSync(funcDir, { recursive: true });
 mkdirSync(staticDir, { recursive: true });
+mkdirSync(funcDir, { recursive: true });
 
 // Copy client assets to static directory
-cpSync(join(root, 'dist', 'client', 'assets'), join(staticDir, 'assets'), { recursive: true });
-
-// Copy server files to function directory
-cpSync(join(root, 'dist', 'server'), funcDir, { recursive: true });
-
-// Create edge function entry point that wraps the server
-const entryContent = `
-import server from './server.js';
-
-export default async function handler(request) {
-  return server.fetch(request, {}, {});
+const clientDir = join(root, 'dist', 'client');
+if (existsSync(clientDir)) {
+  cpSync(clientDir, staticDir, { recursive: true });
 }
 
-export const config = {
-  runtime: 'edge',
-};
+// Copy server to function directory
+const serverDir = join(root, 'dist', 'server');
+if (existsSync(serverDir)) {
+  cpSync(serverDir, funcDir, { recursive: true });
+}
+
+// Create the serverless function wrapper
+const handlerContent = `
+export default async function handler(req, res) {
+  try {
+    const { default: server } = await import('./server.js');
+    
+    // Convert Node.js request to Web Request
+    const url = new URL(req.url, \`http://\${req.headers.host}\`);
+    const headers = new Headers();
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (value) headers.set(key, Array.isArray(value) ? value[0] : value);
+    }
+    
+    const webRequest = new Request(url.toString(), {
+      method: req.method,
+      headers,
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? req : undefined,
+    });
+    
+    const response = await server.fetch(webRequest, {}, {});
+    
+    // Set response headers
+    response.headers.forEach((value, key) => {
+      res.setHeader(key, value);
+    });
+    
+    res.status(response.status);
+    
+    const body = await response.text();
+    res.send(body);
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
 `;
 
-writeFileSync(join(funcDir, 'index.js'), entryContent);
+writeFileSync(join(funcDir, 'index.js'), handlerContent);
 
-// Create function config
+// Create function config for Node.js runtime
 const funcConfig = {
-  runtime: 'edge',
-  entrypoint: 'index.js'
+  runtime: 'nodejs20.x',
+  handler: 'index.default',
+  launcherType: 'Nodejs'
 };
 writeFileSync(join(funcDir, '.vc-config.json'), JSON.stringify(funcConfig, null, 2));
 
-// Create Vercel output config
+// Create Vercel output config with proper routing
 const outputConfig = {
   version: 3,
   routes: [
     {
-      src: '/assets/(.*)',
-      dest: '/assets/$1'
+      src: '^/assets/(.*)$',
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' },
+      continue: true
+    },
+    {
+      handle: 'filesystem'
     },
     {
       src: '/(.*)',
-      dest: '/index'
+      dest: '/__nitro'
     }
   ]
 };
 writeFileSync(join(outputDir, 'config.json'), JSON.stringify(outputConfig, null, 2));
 
-console.log('Vercel output created successfully!');
+console.log('Vercel Build Output created successfully!');
+console.log('- Static files:', staticDir);
+console.log('- Serverless function:', funcDir);
