@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Sparkles, Mail, Lock } from 'lucide-react';
+import { Loader2, Mail, Lock } from 'lucide-react';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 import { useLangStore } from '@/store/langStore';
@@ -65,7 +65,7 @@ function AuthPage() {
 
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 rounded-2xl bg-coral text-white border-[3px] border-ink shadow-sticker -rotate-3 flex items-center justify-center">
-              <Sparkles size={20} />
+              <Lock size={20} />
             </div>
             <h1 className="font-display text-3xl text-ink">{mode === 'signin' ? (lang === 'ka' ? 'შესვლა' : 'Sign In') : (lang === 'ka' ? 'რეგისტრაცია' : 'Sign Up')}</h1>
           </div>

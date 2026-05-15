@@ -3,7 +3,7 @@ import { useLangStore } from '@/store/langStore';
 import { useContentStore } from '@/store/contentStore';
 import { useCartStore } from '@/store/cartStore';
 import { useEffect, useMemo, useState } from 'react';
-import { Calendar, Users, ShoppingBag, Check, Trash2, Plus, Minus, Loader2, MapPin, Sparkles, Lock } from 'lucide-react';
+import { Calendar, Users, ShoppingBag, Check, Trash2, Plus, Minus, Loader2, MapPin, Lock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
@@ -148,7 +148,7 @@ function BookingPage() {
     toast.success(t.ui.bookingSuccess);
     
     // Select random cute emoji
-    const cuteEmojis = ['🎉', '🎈', '🎁', '⭐', '🌟', '✨', '💖', '🎊', '🦄', '🎀', '🌈', '🎂', '🎭', '🎪'];
+    const cuteEmojis = ['🎉', '🎈', '🎁', '⭐', '🌟', '💖', '🎊', '🦄', '🎀', '🌈', '🎂', '🎭', '🎪'];
     setSelectedEmoji(cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)]);
     
     // Select random animator for popup
@@ -330,7 +330,7 @@ function BookingPage() {
             </StepCard>
 
             {/* Step 2: Program */}
-            <StepCard step={2} done={step2Done} icon={<Sparkles size={17} />} title={t.ui.pickProgram}>
+            <StepCard step={2} done={step2Done} icon={<ShoppingBag size={17} />} title={t.ui.pickProgram}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {programs.map((p: any) => {
                   const isSel = cart.programId === p.id;
@@ -555,7 +555,7 @@ function BookingPage() {
                 ))}
                 {Object.values(cart.services).map((s) => {
                   const q = s.quantity || 1; const h = s.hours || 1;
-                  return <SR key={s.id} emoji="✨" label={s.name} sub={q > 1 || h > 1 ? `×${q}${h > 1 ? ` · ${h}h` : ''}` : undefined} price={`${Math.round(s.price * q * h)}₾`} onRemove={() => cart.setService({ ...s, quantity: 0 })} />;
+                  return <SR key={s.id} emoji="🎁" label={s.name} sub={q > 1 || h > 1 ? `×${q}${h > 1 ? ` · ${h}h` : ''}` : undefined} price={`${Math.round(s.price * q * h)}₾`} onRemove={() => cart.setService({ ...s, quantity: 0 })} />;
                 })}
                 {!slot && Object.keys(cart.animators).length === 0 && Object.keys(cart.services).length === 0 && (
                   <p className="py-8 text-center text-sm text-muted-foreground italic">{t.ui.emptyCart}</p>

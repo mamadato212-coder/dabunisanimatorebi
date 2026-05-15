@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useContentStore } from '@/store/contentStore';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, RotateCcw, Image as ImageIcon, Type, Users, Sparkles, MessageSquare, ShoppingBag, ChevronDown, Plus, Trash2, Save, Upload, Loader2, Lock, Palette, Phone, Download, Star, PartyPopper, CalendarDays, Ban, CheckCircle2, MapPin, ExternalLink } from 'lucide-react';
+import { LogOut, RotateCcw, Image as ImageIcon, Type, Users, MessageSquare, ShoppingBag, ChevronDown, Plus, Trash2, Save, Upload, Loader2, Lock, Palette, Phone, Download, Star, PartyPopper, CalendarDays, Ban, CheckCircle2, MapPin, ExternalLink } from 'lucide-react';
 import type { Language } from '@/types';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
@@ -102,7 +102,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'animators', label: 'Heroes', icon: <Star size={16} /> },
   { id: 'hosts', label: 'Animators', icon: <Users size={16} /> },
   { id: 'programs', label: 'Programs', icon: <PartyPopper size={16} /> },
-  { id: 'services', label: 'Services', icon: <Sparkles size={16} /> },
+  { id: 'services', label: 'Services', icon: <MessageSquare size={16} /> },
   { id: 'timeslots', label: 'Time Slots', icon: <Type size={16} /> },
   { id: 'ui', label: 'UI Texts', icon: <Type size={16} /> },
   { id: 'faq', label: 'FAQ', icon: <MessageSquare size={16} /> },

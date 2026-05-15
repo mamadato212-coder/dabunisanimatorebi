@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useLangStore } from '@/store/langStore';
 import { useContentStore } from '@/store/contentStore';
-import { ArrowRight, Star, Sparkles, PartyPopper, Cake, Gift } from 'lucide-react';
+import { ArrowRight, Star, PartyPopper, Cake, Gift } from 'lucide-react';
 import { VideoPlayer } from '@/components/site/VideoPlayer';
 import { isVideoFile, getEmbedUrl } from '@/lib/media';
 
@@ -151,7 +151,7 @@ function Home() {
 
   const features = [
     {
-      icon: <Sparkles size={26} />,
+      icon: <Star size={26} />,
       title: lang === 'ka' ? 'პროფესიონალი ანიმატორები' : 'Pro Animators',
       desc:
         lang === 'ka'
@@ -188,7 +188,7 @@ function Home() {
             {/* Text side */}
             <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center gap-6 relative">
               <span className="self-start inline-flex items-center gap-2 px-4 py-1.5 bg-grass text-white border-[2px] border-ink rounded-lg font-black text-xs uppercase tracking-wider shadow-sticker -rotate-2">
-                <Sparkles size={14} /> {lang === 'ka' ? 'სიხარული გარანტირებულია' : 'Happiness guaranteed'}
+                <PartyPopper size={14} /> {lang === 'ka' ? 'სიხარული გარანტირებულია' : 'Happiness guaranteed'}
               </span>
 
               <h1 className="font-display text-7xl md:text-8xl lg:text-9xl text-ink leading-[0.85] tracking-tight">
